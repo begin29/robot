@@ -1,6 +1,4 @@
 include Java
-
-require 'daemons'
 # here we are importing Java classes, just like you might require 'yaml' or 'date'
 import java.awt.Robot
 import java.awt.Toolkit
