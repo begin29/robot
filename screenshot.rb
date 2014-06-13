@@ -46,15 +46,12 @@ end
 get_image
 @x_t = find_timer_position
 
-# Process.spawn()
-Daemons.run_proc('background robot') do
-   loop do
-      p '-------------'
-      p @image.getRGB(@x_t)
-      sleep(1)
-   end
-end
 
+  loop do
+    p '-------------'
+    p @image.getRGB(@x_t)
+    sleep(1)
+  end
 # Thread.new do
 #   while true
 #     sleep(1)
