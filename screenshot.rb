@@ -37,7 +37,6 @@ def find_timer_position
     # p c.getGreen
     if hex == "ff373737"
       break
-      
     end
     @i +=1
   end
