@@ -3,6 +3,9 @@ class TrayApplication
   include Java
   import java.awt.TrayIcon
   import java.awt.Toolkit
+  # import java.io.InputStreamReader
+  # import java.io.BufferedReader
+  # import java.lang.System
 
   attr_accessor :icon_filename, :menu_items
 
@@ -26,7 +29,6 @@ class TrayApplication
     tray_icon = TrayIcon.new(image, @name, popup)
     # TODO: need to clear tray
     p '-------------------------run'
-    p TrayIcon.all
     tray_icon.image_auto_size = true
 
     # Finally add the tray icon to the tray
