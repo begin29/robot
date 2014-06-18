@@ -28,4 +28,4 @@ ruby main.rb
 rvm use jruby
 ```
 
-2.For stop `mouse move` please push `'Escape'`.
+2. For stop `mouse move` please push `'Escape'`.
