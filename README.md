@@ -24,8 +24,8 @@ ruby main.rb
 
 #### Posssible Troubles
 1. If you have error like `cannot load such file -- tray_app`, type:
-```bash
-rvm use jruby
-```
+  ```bash
+  rvm use jruby
+  ```
 
 2. For stop `mouse move` please push `'Escape'`.
