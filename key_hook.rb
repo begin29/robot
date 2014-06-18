@@ -14,6 +14,7 @@ class KeyHook
   end
 
   def nativeKeyTyped(e)
+
     # puts NativeKeyEvent.getKeyText e.getKeyCode
   end
 
