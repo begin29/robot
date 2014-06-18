@@ -22,71 +22,16 @@ class MyRobot
     @m_height = @dim.get_height
   end
 
-  def get_image
-    rectangle = Rectangle.new(@m_width*0.5, 0, @m_width-@m_width*0.75, 24) #TODO: need to change val 200
-    image     = @robot.create_screen_capture(rectangle)
-  end
-
-
-  def find_timer_position img
-    iw = img.get_width
-    ih = img.get_height
-    @i = 0
-    while @i < iw  do
-      temp = img.getRGB(@i,12)
-      hex = Integer.toHexString(temp)
-      break if (hex == 'ff373737' || hex == 'ffac0d0d' || hex == 'ffff9e0d' || hex == 'ff598b36' || hex == 'ff141414')
-      @i +=1
-    end
-    @i+1 < iw ? @i+1 : nil
-  end
-
   def start_shot
-    p '-------------start'
     @x_t ||= nil
     unless @x_t.nil?
-      p 'work_cycle'
-      p @x_t
+      p '-------------tracker shot working'
       work_cycle @x_t
     else
-      p 'start_shot else'
+      p '--------------searching tracker...'
       @x_t = find_position_cycle
       self.start_shot
     end
-  end
-
-  def work_cycle x_t
-    loop do
-      timer_color = nil
-      image = get_image
-      timer_color = image.getRGB(x_t, 12) unless x_t.nil?
-
-      w_title = %w[chrome sublime].sample
-      case Integer.toHexString(timer_color)
-      when 'ffac0d0d'
-        p '===================3'
-      when 'ffff9e0d'
-        p '===================2'
-        self.execute('wmctrl -R'+ w_title)
-      when 'ff598b36'
-        p '===================1'
-      when 'ff141414'
-        p '===================take screen'
-      end
-
-      sleep(1)
-    end
-  end
-
-  def find_position_cycle
-    x_t = nil
-    loop do
-      image = get_image
-      x_t = find_timer_position(image)
-      break unless x_t.nil?
-      sleep(1)
-    end
-    x_t
   end
 
   def take_image image
@@ -109,10 +54,74 @@ class MyRobot
   end
 
   def mouse_move
+    p '---------------start mouse move'
     loop do
       @robot.mouseMove(Random.new.rand(0..@m_width),Random.new.rand(0..@m_height))
-      sleep(2);
-      # break unless @code.nil?
+      break_cycle 'Escape', 'mouse move'
+      sleep(3)
     end
   end
+
+  private
+    def get_image
+      rectangle = Rectangle.new(@m_width*0.5, 0, @m_width-@m_width*0.75, 24) #TODO: need to change val 200
+      image     = @robot.create_screen_capture(rectangle)
+    end
+
+    def work_cycle x_t
+      loop do
+        timer_color = nil
+        image = get_image
+        timer_color = image.getRGB(x_t, 12) unless x_t.nil?
+
+        w_title = %w[chrome sublime].sample
+        case Integer.toHexString(timer_color)
+        when 'ffac0d0d'
+          p '===================3'
+        when 'ffff9e0d'
+          p '===================2'
+          self.execute('wmctrl -R'+ w_title)
+        when 'ff598b36'
+          p '===================1'
+        when 'ff141414'
+          p '===================take screen'
+        end
+        sleep(1)
+      end
+    end
+
+    def find_position_cycle
+      x_t = nil
+      loop do
+        image = get_image
+        x_t = find_timer_position(image)
+        unless x_t.nil?
+          p '-----------------searching done'
+          break
+        end
+        sleep(1)
+      end
+      x_t
+    end
+
+    def break_cycle key_name, process_name
+      if $global_key && $global_key == key_name
+        $global_key = nil
+        p "--------------#{process_name} stopped"
+        break
+      end
+    end
+
+    def find_timer_position img
+      iw = img.get_width
+      ih = img.get_height
+      @i = 0
+      while @i < iw  do
+        temp = img.getRGB(@i,12)
+        hex = Integer.toHexString(temp)
+        break if (hex == 'ff373737' || hex == 'ffac0d0d' || hex == 'ffff9e0d' || hex == 'ff598b36' || hex == 'ff141414')
+        @i +=1
+      end
+      @i+1 < iw ? @i+1 : nil
+    end
 end
