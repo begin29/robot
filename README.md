@@ -10,6 +10,13 @@ jRuby application, that helpes for calm development.
 ```bash
 rvm install jruby
 ```
+
+#### Install xdotool:
+
+```bash
+sudo apt-get install xdotool
+```
+
 #### Clone project
 ```bash
 git clone git@github.com:begin29/robot.git

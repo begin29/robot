@@ -92,10 +92,11 @@ class MyRobot
           p '===================2'
           if @monitor_count == 1
             self.execute('wmctrl -R'+ w_title)
-            self.execute("google-chrome http://www.google.com") if w_title == 'chrome'
+            self.execute("xdotool key Ctrl+#{[1,2].sample}") if w_title == 'chrome'
           else
-            self.execute("google-chrome http://www.google.com")
             self.execute('wmctrl -R sublime')
+            self.execute('wmctrl -R chrome')
+            self.execute("xdotool key Ctrl+#{[1,2].sample}")
           end
         when 'ff598b36'
           p '===================1'
