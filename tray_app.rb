@@ -35,9 +35,6 @@ class TrayApplication
     tray.add(tray_icon)
     GlobalScreen.registerNativeHook
     GlobalScreen.getInstance.addNativeKeyListener KeyHook.new
-    loop do
-      sleep(1)
-    end
   end
 
 end
