@@ -61,7 +61,7 @@ class MyRobot
   end
 
   def execute cmd
-    Runtime.getRuntime.exec("#{cmd}")
+    Runtime.getRuntime.exec(cmd)
   end
 
   def show_notification
@@ -90,20 +90,25 @@ class MyRobot
           p '===================3'
         when 'ffff9e0d'
           p '===================2'
-          if @monitor_count == 1
-            self.execute('wmctrl -R'+ w_title)
-            self.execute("xdotool key Ctrl+#{[1,2].sample}") if w_title == 'chrome'
-          else
-            self.execute('wmctrl -R sublime')
-            self.execute('wmctrl -R chrome')
-            self.execute("xdotool key Ctrl+#{[1,2].sample}")
-          end
+          @monitor_count == 1 ? open_work_environment(w_title) : open_work_environment
         when 'ff598b36'
           p '===================1'
         when 'ff141414'
           p '===================take screen'
         end
         sleep(1)
+      end
+    end
+
+    def open_work_environment title=nil
+      if title.nil?
+        p '------------------open_work_environment'
+        self.execute('wmctrl -R sublime')
+        self.execute('wmctrl -R chrome') # TODO: 'need to change' xdotool key Ctrl+m && sleep 0.2 && xdotool type "localhost 3000" && sleep 0.2 && xdotool key KP_Enter ;
+        self.execute("xdotool key Ctrl+#{[1,2].sample}")
+      else
+        self.execute('wmctrl -R'+ title)
+        self.execute("xdotool key Ctrl+#{[1,2].sample}") if w_title == 'chrome'
       end
     end
 
