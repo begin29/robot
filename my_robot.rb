@@ -35,22 +35,6 @@ class MyRobot
     end
   end
 
-  def take_image
-    image = get_image
-    file = java::io::File.new("test_#{Time.now.to_i}.png")
-    ImageIO::write(image, "png", file)
-  end
-
-  def take_color name, x_t, y_t
-    file = ImageIO.read( FileInputStream.new("#{name}.png") )
-    p 'take color'
-    p Integer.toHexString( file.getRGB(x_t, y_t) )
-    # ff598b36 green 1
-    # ffff9e0d orange 2
-    # ffac0d0d red 3
-    # ff141414 screen
-  end
-
   def mouse_move
     p '---------------start mouse move'
     loop do
@@ -68,10 +52,28 @@ class MyRobot
     self.execute('notify-send --expire-time=2000 Robot_say: Hello!!! -i face-tired')
   end
 
+  # NOTE: for develompent
+  def take_image
+    image = get_image
+    file = java::io::File.new("test_#{Time.now.to_i}.png")
+    ImageIO::write(image, "png", file)
+  end
+
+  # NOTE: for develompent
+  def take_color name, x_t, y_t
+    file = ImageIO.read( FileInputStream.new("#{name}.png") )
+    p 'take color'
+    p Integer.toHexString( file.getRGB(x_t, y_t) )
+    # ff598b36 green 1
+    # ffff9e0d orange 2
+    # ffac0d0d red 3
+    # ff141414 screen
+  end
+
   private
     def get_image
-      rectangle = Rectangle.new(0, 0, @m_width, 24) #TODO: need to change val 200
-      image     = @robot.create_screen_capture(rectangle)
+      rectangle = Rectangle.new(0, 0, @m_width, 24)
+      @robot.create_screen_capture(rectangle)
     end
 
     def open_image name
@@ -103,12 +105,12 @@ class MyRobot
     def open_work_environment title=nil
       if title.nil?
         p '------------------open_work_environment'
-        self.execute('wmctrl -R sublime')
-        self.execute('wmctrl -R chrome') # TODO: 'need to change' xdotool key Ctrl+m && sleep 0.2 && xdotool type "localhost 3000" && sleep 0.2 && xdotool key KP_Enter ;
+        self.execute('wmctrl -a sublime')
+        self.execute('wmctrl -a chrome') # TODO: 'need to change' xdotool key Ctrl+m && sleep 0.2 && xdotool type "localhost 3000" && sleep 0.2 && xdotool key KP_Enter ;
         self.execute("xdotool key Ctrl+#{[1,2].sample}")
       else
-        self.execute('wmctrl -R'+ title)
-        self.execute("xdotool key Ctrl+#{[1,2].sample}") if w_title == 'chrome'
+        self.execute("wmctrl -a #{title}")
+        self.execute("xdotool key Ctrl+#{[1,2].sample}") if w_title == "chrome"
       end
     end
 
@@ -119,6 +121,7 @@ class MyRobot
         x_t = find_timer_position(image)
         unless x_t.nil?
           p '-----------------searching done'
+          p x_t
           break
         end
         sleep(1)
@@ -137,11 +140,16 @@ class MyRobot
     def find_timer_position img
       iw = img.get_width
       ih = img.get_height
+      $arr = []
       @i = 0
       while @i < iw  do
         hex = Integer.toHexString( img.getRGB(@i,12) )
         hex9 = Integer.toHexString( img.getRGB(@i,9) )
         hex15 = Integer.toHexString( img.getRGB(@i,15) )
+        if hex != 'ff3d3d39'
+          $arr << hex
+          $arr.uniq
+        end
         break if ( (hex == 'ff373737' && hex9 == 'ff525252' && hex15 == 'ff313131') ) # TODO: add for not working and screen process timer   || hex == 'ffac0d0d' || hex == 'ffff9e0d' || hex == 'ff598b36' || hex == 'ff141414')
         @i +=1
       end
