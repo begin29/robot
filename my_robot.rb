@@ -148,9 +148,9 @@ class MyRobot
         hex15 = Integer.toHexString( img.getRGB(@i,15) )
         if hex != 'ff3d3d39'
           $arr << hex
-          $arr.uniq
+          $arr = $arr.uniq
         end
-        break if ( (hex == 'ff373737' && hex9 == 'ff525252' && hex15 == 'ff313131') ) # TODO: add for not working and screen process timer   || hex == 'ffac0d0d' || hex == 'ffff9e0d' || hex == 'ff598b36' || hex == 'ff141414')
+        break if ( (hex == 'ffbce2ff' && hex9 == 'ffe2f0fc' && hex15 == 'fff0f6fd') ) # TODO: add for not working and screen process timer   || hex == 'ffac0d0d' || hex == 'ffff9e0d' || hex == 'ff598b36' || hex == 'ff141414')
         @i +=1
       end
       @i+1 < iw ? @i+1 : nil
