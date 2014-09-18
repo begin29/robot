@@ -13,6 +13,8 @@ class MyRobot
   import java.io.InputStreamReader
   import java.lang.System
 
+  require 'date'
+
 
   def initialize
     @robot     = Robot.new
@@ -44,6 +46,15 @@ class MyRobot
     end
   end
 
+  def take_desctop_screenshot
+    p '---------------start take screenshots'
+    loop do
+      take_image DateTime.now.strftime("%d_%m_%y"), true, true
+      break_cycle 'Pause', 'desctop screenshots'
+      sleep(3)
+    end
+  end
+
   def execute cmd
     Runtime.getRuntime.exec(cmd)
   end
@@ -53,9 +64,11 @@ class MyRobot
   end
 
   # NOTE: for develompent
-  def take_image
-    image = get_image
-    file = java::io::File.new("test_#{Time.now.to_i}.png")
+  def take_image file_prefix_name=nil, full_height=nil, need_divide=nil
+    image = get_image full_height, need_divide
+    # folder = folder_name ? "" : folder_name
+    # java::io::File.new(folder_name).mkdir unless folder_name.empty?
+    file = java::io::File.new("#{file_prefix_name}test_#{Time.now.to_i}.png")
     ImageIO::write(image, "png", file)
   end
 
@@ -71,8 +84,10 @@ class MyRobot
   end
 
   private
-    def get_image
-      rectangle = Rectangle.new(0, 0, @m_width, 24)
+    def get_image full_height=nil, need_divide=nil
+      height = full_height ? @m_height : 24
+      width = need_divide ? @m_width/2 : @m_width
+      rectangle = Rectangle.new(0, 0, width, height)
       @robot.create_screen_capture(rectangle)
     end
 
@@ -88,14 +103,14 @@ class MyRobot
         w_title = %w[chrome sublime].sample
         case Integer.toHexString(timer_color)
         when 'ffac0d0d'
-          show_notification
+          # show_notification
           p '===================3'
-        when 'ffff9e0d'
+        when 'ffffd493'
           p '===================2'
           @monitor_count == 1 ? open_work_environment(w_title) : open_work_environment
-        when 'ff598b36'
+        when 'ffeef3eb'
           p '===================1'
-        when 'ff141414'
+        when 'ffd8edfe'
           p '===================take screen'
         end
         sleep(1)
@@ -107,10 +122,8 @@ class MyRobot
         p '------------------open_work_environment'
         self.execute('wmctrl -a sublime')
         self.execute('wmctrl -a chrome') # TODO: 'need to change' xdotool key Ctrl+m && sleep 0.2 && xdotool type "localhost 3000" && sleep 0.2 && xdotool key KP_Enter ;
-        self.execute("xdotool key Ctrl+#{[1,2].sample}")
       else
         self.execute("wmctrl -a #{title}")
-        self.execute("xdotool key Ctrl+#{[1,2].sample}") if w_title == "chrome"
       end
     end
 
